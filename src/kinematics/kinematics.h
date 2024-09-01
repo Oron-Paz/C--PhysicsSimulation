@@ -5,7 +5,8 @@
 
 namespace constants
 {
-    const float GLOBAL_CONST_GRAVITY = 200.0f;
+    const float GLOBAL_CONST_GRAVITY = 980.0f;
+    const float DAMP_FACTOR = 0.8f;
     // ... other related constants
 
 } // namespace constants
