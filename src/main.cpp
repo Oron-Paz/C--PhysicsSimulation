@@ -2,11 +2,34 @@
 #include "CircleObject.h"
 #include <iostream>
 
+#define WIDTH 1280
+#define HEIGHT 720
+
+#define RADIUS 25              // Radius of the circle  
+
+#define  NUM_ROWS  5         // Number of rows in the grid
+#define  NUM_COLS  10        // Number of columns in the grid
+#define  SPACING  10.0f    // Spacing between circles
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "PHYSICS SIMULATOR");
     sf::Clock clock; // starts the clock
-    CircleObject circle(50, sf::Color::Blue, sf::Vector2f(100, 100)); //create circle (radius, color, position)
+
+    CircleObject circles[NUM_ROWS][NUM_COLS];
+
+    // Initialize the circles
+    for (int row = 0; row < NUM_ROWS; ++row) {
+        for (int col = 0; col < NUM_COLS; ++col) {
+            // Calculate the position for each circle
+            float x = 100 + col * (2 * RADIUS + SPACING);
+            float y = 100 + row * (2 * RADIUS + SPACING);
+            // Create and initialize each circle
+            circles[row][col] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+        }
+    }
+
+    //CircleObject circle(50, sf::Color::Blue, sf::Vector2f(100, 100)); //create circle (radius, color, position)
 
     while (window.isOpen())
     {
@@ -19,12 +42,21 @@ int main()
                 window.close();
         }
 
-        //sf::Time elapsed1 = clock.getElapsedTime();
-        //std::cout << elapsed1.asSeconds() << std::endl;
-        circle.update(deltaTime.asSeconds());
+       // Update each circle
+        for (int row = 0; row < NUM_ROWS; ++row) {
+            for (int col = 0; col < NUM_COLS; ++col) {
+                circles[row][col].update(deltaTime.asSeconds());
+            }
+        }
 
         window.clear();
-        circle.draw(window);
+        
+        // Draw each circle
+        for (int row = 0; row < NUM_ROWS; ++row) {
+            for (int col = 0; col < NUM_COLS; ++col) {
+                circles[row][col].draw(window);
+            }
+        }
         window.display();
     }
 

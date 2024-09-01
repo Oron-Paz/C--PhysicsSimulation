@@ -5,8 +5,6 @@ void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleSha
     position.y += velocity.y * deltaTime;
     velocity.y += constants::GLOBAL_CONST_GRAVITY * deltaTime;
     shape.setPosition(position);
-
-    std::cout << "y position: " << position.y << std::endl;
     
 
     if (position.y > 720 - shape.getRadius() * 2) {
@@ -26,5 +24,4 @@ void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleSha
         velocity.x = -velocity.x * constants::DAMP_FACTOR;
     }
 }
-
 

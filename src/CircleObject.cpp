@@ -6,6 +6,13 @@ CircleObject::CircleObject(int radius, sf::Color color, sf::Vector2f position ) 
     shape.setFillColor(color);
 }
 
+
+CircleObject::CircleObject() 
+    : color(sf::Color::White), shape(0), position(0, 0), velocity(0, 0) {
+    shape.setPosition(position);
+    shape.setFillColor(color);
+}
+
 void CircleObject::draw(sf::RenderWindow& window) { // Pass window by reference, draws on window
     window.draw(shape);
 }
