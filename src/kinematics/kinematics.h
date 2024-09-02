@@ -12,5 +12,6 @@ namespace constants
 } // namespace constants
 
 void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleShape& shape , float deltaTime);
+bool detect_collisions(sf::CircleShape& thisShape, sf::CircleShape& otherShape);
 
 #endif //KINEMATICS_H

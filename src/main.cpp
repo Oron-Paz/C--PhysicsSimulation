@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "CircleObject.h"
+#include "kinematics/kinematics.h"
 #include <iostream>
 
 #define WIDTH 1280
@@ -7,8 +8,8 @@
 
 #define RADIUS 25              // Radius of the circle  
 
-#define  NUM_ROWS  5         // Number of rows in the grid
-#define  NUM_COLS  10        // Number of columns in the grid
+#define  NUM_ROWS  2         // Number of rows in the grid
+#define  NUM_COLS  1        // Number of columns in the grid
 #define  SPACING  10.0f    // Spacing between circles
 
 int main()
@@ -29,7 +30,6 @@ int main()
         }
     }
 
-    //CircleObject circle(50, sf::Color::Blue, sf::Vector2f(100, 100)); //create circle (radius, color, position)
 
     while (window.isOpen())
     {
@@ -49,8 +49,12 @@ int main()
             }
         }
 
+       
+       bool collided = detect_collisions(circles[0][0].shape, circles[1][0].shape); 
+
+
         window.clear();
-        
+
         // Draw each circle
         for (int row = 0; row < NUM_ROWS; ++row) {
             for (int col = 0; col < NUM_COLS; ++col) {

@@ -13,6 +13,7 @@ CircleObject::CircleObject()
     shape.setFillColor(color);
 }
 
+
 void CircleObject::draw(sf::RenderWindow& window) { // Pass window by reference, draws on window
     window.draw(shape);
 }
