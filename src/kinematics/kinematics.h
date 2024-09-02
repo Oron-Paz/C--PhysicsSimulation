@@ -2,6 +2,7 @@
 #define KINEMATICS_H
 
 #include <SFML/Graphics.hpp>
+#include "CircleObject.h"
 
 namespace constants
 {
@@ -12,6 +13,7 @@ namespace constants
 } // namespace constants
 
 void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleShape& shape , float deltaTime);
-bool detect_collisions(sf::CircleShape& thisShape, sf::CircleShape& otherShape);
+void collide(CircleObject& thisShape, CircleObject& otherShape);
+bool detect_collisions(const sf::CircleShape& thisShape, const sf::CircleShape& otherShape);
 
 #endif //KINEMATICS_H

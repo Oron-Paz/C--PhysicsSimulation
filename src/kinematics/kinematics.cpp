@@ -1,5 +1,7 @@
 #include "kinematics.h"
 #include <iostream>
+#include <cmath>
+#include "CircleObject.h"
 
 void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleShape& shape, float deltaTime) {
 
@@ -25,7 +27,15 @@ void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleSha
     }
 }
 
-bool detect_collisions(sf::CircleShape& thisShape, sf::CircleShape& otherShape) {
+
+//https://www.euclideanspace.com/physics/dynamics/collision/twod/index.htm
+void collide(CircleObject& thisShape, CircleObject& otherShape){
+    if(detect_collisions(thisShape.getShape(), otherShape.getShape())){
+        
+    }
+}
+
+bool detect_collisions(const sf::CircleShape& thisShape, const sf::CircleShape& otherShape) {
     sf::Vector2f thisPosition = thisShape.getPosition();
     sf::Vector2f otherPosition = otherShape.getPosition();
     float thisRadius = thisShape.getRadius();
