@@ -1,37 +1,38 @@
 #include "kinematics.h"
 #include <iostream>
 #include <cmath>
-#include "CircleObject.h"
 
 void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleShape& shape, float deltaTime) {
-
     position.y += velocity.y * deltaTime;
     velocity.y += constants::GLOBAL_CONST_GRAVITY * deltaTime;
     shape.setPosition(position);
-    
+
     if (position.y > 720 - shape.getRadius() * 2) {
         position.y = 720 - shape.getRadius() * 2;
         velocity.y = -velocity.y * constants::DAMP_FACTOR;
     }
-    if(position.y < 0 + shape.getRadius() * 2){
+    if (position.y < 0 + shape.getRadius() * 2) {
         position.y = 0 + shape.getRadius() * 2;
         velocity.y = -velocity.y * constants::DAMP_FACTOR;
     }
-    if(position.x > 1280 - shape.getRadius() * 2){
+    if (position.x > 1280 - shape.getRadius() * 2) {
         position.x = 1280 - shape.getRadius() * 2;
         velocity.x = -velocity.x * constants::DAMP_FACTOR;
     }
-    if (position.x < 0 + shape.getRadius() * 2){ 
+    if (position.x < 0 + shape.getRadius() * 2) { 
         position.x = 0 + shape.getRadius() * 2;
         velocity.x = -velocity.x * constants::DAMP_FACTOR;
     }
 }
 
+void collide(CircleObject& thisShape, CircleObject& otherShape) {
+    if (detect_collisions(thisShape.getShape(), otherShape.getShape())) {
 
-//https://www.euclideanspace.com/physics/dynamics/collision/twod/index.htm
-void collide(CircleObject& thisShape, CircleObject& otherShape){
-    if(detect_collisions(thisShape.getShape(), otherShape.getShape())){
-        
+        sf::Vector2f thisVelocity = thisShape.getVelocity();
+        sf::Vector2f otherVelocity = otherShape.getVelocity();
+
+        thisShape.setVelocity(otherVelocity);
+        otherShape.setVelocity(thisVelocity);
     }
 }
 
@@ -47,12 +48,6 @@ bool detect_collisions(const sf::CircleShape& thisShape, const sf::CircleShape& 
     // Calculate the distance between the centers using the Euclidean distance formula
     float distance = std::sqrt(difference.x * difference.x + difference.y * difference.y);
 
-    //std::cout << "Distance between centers = " << distance << std::endl;
-
     // Check if distance is less than or equal to the sum of the radii
-    if (distance <= (thisRadius + otherRadius)) {
-        return true; // collision detected
-    }
-
-    return false; // collision not detected
+    return (distance <= (thisRadius + otherRadius));
 }

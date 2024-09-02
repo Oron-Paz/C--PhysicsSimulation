@@ -20,7 +20,7 @@ int main()
     CircleObject circles[NUM_ROWS][NUM_COLS];
 
     // Initialize the circles
-    for (int row = 0; row < NUM_ROWS; ++row) {
+    /*for (int row = 0; row < NUM_ROWS; ++row) {
         for (int col = 0; col < NUM_COLS; ++col) {
             // Calculate the position for each circle
             float x = 100 + col * (2 * RADIUS + SPACING);
@@ -28,7 +28,10 @@ int main()
             // Create and initialize each circle
             circles[row][col] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
         }
-    }
+    }*/
+
+    circles[0][0] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(100, 100));
+    circles[1][0] = CircleObject(RADIUS, sf::Color::Red, sf::Vector2f(100, 200));
 
 
     while (window.isOpen())
@@ -48,10 +51,8 @@ int main()
                 circles[row][col].update(deltaTime.asSeconds());
             }
         }
-
        
-       bool collided = detect_collisions(circles[0][0].shape, circles[1][0].shape); 
-
+        collide(circles[0][0], circles[1][0]);
 
         window.clear();
 
