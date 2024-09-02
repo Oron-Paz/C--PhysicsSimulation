@@ -18,16 +18,13 @@ public:
     const sf::Vector2f getVelocity() const { return velocity; }
     void setPosition(sf::Vector2f position) { this->position = position; }
     void setVelocity(sf::Vector2f velocity) { this->velocity = velocity; }
-    
-    
-   
 
 private:
     //int radius;
     sf::Color color;
     sf::CircleShape shape;
     sf::Vector2f position;
-    sf::Vector2f velocity;
+    sf::Vector2f velocity = sf::Vector2f(0, 0);
 
 };
 
