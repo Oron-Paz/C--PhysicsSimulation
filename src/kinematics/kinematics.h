@@ -3,6 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include "CircleObject.h"
+#include <iostream>
+#include <cmath>
+#include "../utils/vectorMath.h"
 
 class CircleObject;
 

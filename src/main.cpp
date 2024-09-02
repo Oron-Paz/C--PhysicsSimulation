@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "CircleObject.h"
 #include "kinematics/kinematics.h"
+#include "utils/vectorMath.h"
 #include <iostream>
 
 #define WIDTH 1280

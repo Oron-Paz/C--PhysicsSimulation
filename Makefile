@@ -6,11 +6,14 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 OBJ_PATH = build
 SRC_PATH = src
 KINEMATICS_PATH = src/kinematics
+UTILS_PATH = src/utils
 
 # Source files
 SRCS = $(wildcard $(SRC_PATH)/*.cpp) $(wildcard $(KINEMATICS_PATH)/*.cpp)
 OBJS = $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(filter-out $(KINEMATICS_PATH)/%.cpp,$(SRCS)))
 OBJS += $(patsubst $(KINEMATICS_PATH)/%.cpp,$(OBJ_PATH)/kinematics/%.o,$(wildcard $(KINEMATICS_PATH)/*.cpp))
+OBJS += $(patsubst $(UTILS_PATH)/%.cpp,$(OBJ_PATH)/utils/%.o,$(wildcard $(UTILS_PATH)/*.cpp))
+
 
 # SFML Paths/Flags
 SFML_PATH = /opt/homebrew/Cellar/sfml/2.6.1
@@ -30,8 +33,12 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 $(OBJ_PATH)/kinematics/%.o: $(KINEMATICS_PATH)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(SFML_INCLUDE_PATH) -I$(SRC_PATH)
 
+$(OBJ_PATH)/utils/%.o: $(UTILS_PATH)/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(SFML_INCLUDE_PATH) -I$(SRC_PATH)
+
 directories:
 	mkdir -p $(OBJ_PATH)/kinematics
+	mkdir -p $(OBJ_PATH)/utils
 
 clean:
 	rm -rf $(OBJ_PATH) app

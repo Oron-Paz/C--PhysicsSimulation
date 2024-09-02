@@ -1,6 +1,7 @@
 #include "kinematics.h"
 #include <iostream>
 #include <cmath>
+#include "../utils/vectorMath.h"
 
 void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleShape& shape, float deltaTime) {
     position.y += velocity.y * deltaTime;
@@ -27,12 +28,34 @@ void apply_gravity(sf::Vector2f& position, sf::Vector2f& velocity, sf::CircleSha
 
 void collide(CircleObject& thisShape, CircleObject& otherShape) {
     if (detect_collisions(thisShape.getShape(), otherShape.getShape())) {
+        sf::Vector2f v1 = thisShape.getVelocity();
+        sf::Vector2f v2 = otherShape.getVelocity();
+        sf::Vector2f x1 = thisShape.getShape().getPosition();
+        sf::Vector2f x2 = otherShape.getShape().getPosition();
 
-        sf::Vector2f thisVelocity = thisShape.getVelocity();
-        sf::Vector2f otherVelocity = otherShape.getVelocity();
+        sf::Vector2f x_diff = x1 - x2;
+        float x_diff_mag_sq = magnitude_squared(x_diff);
 
-        thisShape.setVelocity(otherVelocity);
-        otherShape.setVelocity(thisVelocity);
+        sf::Vector2f v_diff = v1 - v2;
+
+        //simplified scalar calculation (mass terms cancel as mass=1 always)
+        float scalar = dot(v_diff, x_diff) / x_diff_mag_sq;
+
+        sf::Vector2f new_v1 = v1 - sf::Vector2f(x_diff.x * scalar, x_diff.y * scalar);
+        sf::Vector2f new_v2 = v2 + sf::Vector2f(x_diff.x * scalar, x_diff.y * scalar);
+
+        thisShape.setVelocity(new_v1);
+        otherShape.setVelocity(new_v2);
+
+
+        //honeslty no clue what this part does this is all chatGPT down here
+        // Separate the objects to prevent sticking
+        float overlap = thisShape.getShape().getRadius() + otherShape.getShape().getRadius() - 
+                        std::sqrt(x_diff_mag_sq);
+        sf::Vector2f separation = sf::Vector2f(x_diff.x * overlap / (2*std::sqrt(x_diff_mag_sq)),
+                                               x_diff.y * overlap / (2*std::sqrt(x_diff_mag_sq)));
+        thisShape.setPosition(x1 + separation);
+        otherShape.setPosition(x2 - separation);
     }
 }
 
