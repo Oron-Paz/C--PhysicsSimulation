@@ -1,46 +1,24 @@
-# Compiler related stuff...
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
+CXX := g++
+CXXFLAGS := -std=c++11 -Wall -Werror -Wextra -pedantic -O3 -march=native
 
-# Project Paths
-OBJ_PATH = build
-SRC_PATH = src
-KINEMATICS_PATH = src/kinematics
-UTILS_PATH = src/utils
+SFML_LIBS := -lsfml-graphics -lsfml-window -lsfml-system
 
-# Source files
-SRCS = $(wildcard $(SRC_PATH)/*.cpp) $(wildcard $(KINEMATICS_PATH)/*.cpp)
-OBJS = $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(filter-out $(KINEMATICS_PATH)/%.cpp,$(SRCS)))
-OBJS += $(patsubst $(KINEMATICS_PATH)/%.cpp,$(OBJ_PATH)/kinematics/%.o,$(wildcard $(KINEMATICS_PATH)/*.cpp))
-OBJS += $(patsubst $(UTILS_PATH)/%.cpp,$(OBJ_PATH)/utils/%.o,$(wildcard $(UTILS_PATH)/*.cpp))
+TARGET := main
 
+SRC := src/main.cpp src/utils.cpp src/main_menu.cpp src/circle_object.cpp
+OBJ := $(SRC:.cpp=.o)
 
-# SFML Paths/Flags
-SFML_PATH = /opt/homebrew/Cellar/sfml/2.6.1
-SFML_INCLUDE_PATH = $(SFML_PATH)/include
-SFML_LIB_PATH = $(SFML_PATH)/lib
-SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+all: $(TARGET)
 
-# Targets
-all: directories app
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(SFML_LIBS)
 
-app: $(OBJS)
-	$(CXX) $(CXXFLAGS) $^ -o $@ -L$(SFML_LIB_PATH) $(SFML_LIBS)
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(SFML_INCLUDE_PATH) -I$(SRC_PATH)
-
-$(OBJ_PATH)/kinematics/%.o: $(KINEMATICS_PATH)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(SFML_INCLUDE_PATH) -I$(SRC_PATH)
-
-$(OBJ_PATH)/utils/%.o: $(UTILS_PATH)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(SFML_INCLUDE_PATH) -I$(SRC_PATH)
-
-directories:
-	mkdir -p $(OBJ_PATH)/kinematics
-	mkdir -p $(OBJ_PATH)/utils
+format: clang-format -style=Microsoft -i src/*.cpp include/*.hpp
 
 clean:
-	rm -rf $(OBJ_PATH) app
+	rm -f $(TARGET) $(OBJ)
 
-.PHONY: all clean directories
+.PHONY: all clean format
