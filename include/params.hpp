@@ -12,6 +12,8 @@
 #define NUM_COLS 30                     // Number of columns in the grid
 #define SPACING 5.0f                    // Spacing between circles
 
+#define NUM_CIRCLES 200                 // Number of circles in the simulation
+
 #define GLOBAL_CONST_GRAVITY 980.0f     // Gravity constant
 #define DAMP_FACTOR 0.8f                // Damping factor
 

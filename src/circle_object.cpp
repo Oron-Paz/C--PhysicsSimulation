@@ -23,3 +23,30 @@ void CircleObject::update(float deltaTime)
 {
     apply_gravity(position, velocity, shape, deltaTime);
 }
+
+void CircleObject::update_without_gravity(float deltaTime)
+{
+    position += velocity * deltaTime;
+    // Boundary collision
+    if (position.y > HEIGHT - shape.getRadius() * 2)
+    {
+        position.y = HEIGHT - shape.getRadius() * 2;
+        velocity.y = -velocity.y;
+    }
+    if (position.y < 0 + shape.getRadius() * 2)
+    {
+        position.y = 0 + shape.getRadius() * 2;
+        velocity.y = -velocity.y;
+    }
+    if (position.x > WIDTH - shape.getRadius() * 2)
+    {
+        position.x = WIDTH - shape.getRadius() * 2;
+        velocity.x = -velocity.x;
+    }
+    if (position.x < 0 + shape.getRadius() * 2)
+    {
+        position.x = 0 + shape.getRadius() * 2;
+        velocity.x = -velocity.x;
+    }
+    shape.setPosition(position);
+}

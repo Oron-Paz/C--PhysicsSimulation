@@ -21,7 +21,15 @@ int main()
     // Initialize random seed
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    std::vector<CircleObject> circles(200);
+    std::vector<CircleObject> circles(NUM_CIRCLES);
+
+    for (std::size_t i = 0; i < circles.size(); ++i)
+    {
+        float x = std::rand() % WIDTH;
+        float y = std::rand() % HEIGHT;
+        circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+        circles[i].setVelocity(sf::Vector2f(std::rand() % NUM_CIRCLES - 100, std::rand() % NUM_CIRCLES - 100));
+    }
 
     Menu menu;
 
@@ -93,16 +101,20 @@ int main()
                 {
                     collide(circles[i], circles[j]);
                 }
-            }
-
-            // Draw each circle
-            for (auto &circle : circles)
-            {
-                circle.draw(window);
+                circles[i].draw(window);
             }
         }
         else if (state == SimulationState::MENU)
         {
+            for (std::size_t i = 0; i < circles.size(); ++i)
+            {
+                circles[i].update_without_gravity(deltaTime.asSeconds());
+                for (std::size_t j = i + 1; j < circles.size(); ++j)
+                {
+                    collide(circles[i], circles[j]);
+                }
+                circles[i].draw(window);
+            }
             menu.draw(window);
         }
         window.display();

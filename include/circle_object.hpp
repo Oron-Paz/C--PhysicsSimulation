@@ -7,10 +7,11 @@
 class CircleObject
 {
 public:
-    CircleObject(int radius, sf::Color color, sf::Vector2f position); // Constructor
-    CircleObject();                                                   // Default constructor
-    void draw(sf::RenderWindow &window);                              // Pass window by reference
-    void update(float deltaTime);                                     // Update function to apply gravity);
+    CircleObject(int radius, sf::Color color, sf::Vector2f position);   // Constructor
+    CircleObject();                                                     // Default constructor
+    void draw(sf::RenderWindow &window);                                // Pass window by reference
+    void update(float deltaTime);                                       // Update function to apply gravity);
+    void update_without_gravity(float deltaTime);                            // Update function without gravity
 
     // TODO:  get/set in header file but need to look at the efficiency of this
     const sf::CircleShape getShape() const { return shape; }
