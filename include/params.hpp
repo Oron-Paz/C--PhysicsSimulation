@@ -4,6 +4,8 @@
 #define WIDTH 1280                      // Window width
 #define HEIGHT 720                      // Window height
 
+#define MAX_OPTIONS 3                   // Number of options in the menu
+
 #define RADIUS 5                        // Radius of the circle
 
 #define NUM_ROWS 10                     // Number of rows in the grid

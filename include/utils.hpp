@@ -6,15 +6,6 @@
 #include "params.hpp"
 #include "circle_object.hpp"
 
-enum class SimulationState
-{
-    MENU,
-    START,
-    RUNNING,
-    PAUSED,
-    EXIT
-};
-
 class CircleObject;
 
 // vector math functions
