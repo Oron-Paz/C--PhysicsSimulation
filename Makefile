@@ -1,11 +1,11 @@
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -Werror -Wextra -pedantic -O3 -march=native
+CXXFLAGS := -std=c++11 -Wall -Werror -Wextra -pedantic -O3 -march=native -ffast-math
 
 SFML_LIBS := -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET := main
 
-SRC := src/main.cpp src/utils.cpp src/main_menu.cpp src/circle_object.cpp
+SRC := src/main.cpp src/utils.cpp src/menu.cpp src/circle_object.cpp
 OBJ := $(SRC:.cpp=.o)
 
 all: $(TARGET)
