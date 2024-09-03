@@ -36,6 +36,7 @@ main
 *.opensdf
 *.sdf
 *.sqlite
+.vscode/
 
 # Ignore Xcode files
 *.xcworkspace

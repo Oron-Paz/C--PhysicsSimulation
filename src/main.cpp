@@ -45,32 +45,41 @@ int main()
                 switch (event.key.code)
                 {
                 case sf::Keyboard::Up:
-                    menu.moveUp();
+                    if (state == SimulationState::MENU)
+                    {
+                        menu.moveUp();
+                    }
                     break;
                 case sf::Keyboard::Down:
-                    menu.moveDown();
+                    if (state == SimulationState::MENU)
+                    {
+                        menu.moveDown();
+                    }
                     break;
                 case sf::Keyboard::Return:
-                    switch (menu.getSelectedItemIndex())
+                    if (state == SimulationState::MENU)
                     {
-                    case 0:
-                        state = SimulationState::RUNNING_SIMULATION;
-                        for (std::size_t i = 0; i < circles.size(); ++i)
+                        switch (menu.getSelectedItemIndex())
                         {
-                            float x = std::rand() % (WIDTH - RADIUS);
-                            float y = std::rand() % (HEIGHT - RADIUS);
-                            circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+                        case 0:
+                            state = SimulationState::RUNNING_SIMULATION;
+                            for (std::size_t i = 0; i < circles.size(); ++i)
+                            {
+                                float x = std::rand() % (WIDTH - RADIUS);
+                                float y = std::rand() % (HEIGHT - RADIUS);
+                                circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+                            }
+                            break;
+                        case 1:
+                            // Choose number of circles and start simulation
+                            break;
+                        case 2:
+                            state = SimulationState::EXIT;
+                            window.close();
+                            break;
+                        default:
+                            break;
                         }
-                        break;
-                    case 1:
-                        // Choose number of circles and start simulation
-                        break;
-                    case 2:
-                        state = SimulationState::EXIT;
-                        window.close();
-                        break;
-                    default:
-                        break;
                     }
                     break;
                 case sf::Keyboard::M:
