@@ -21,33 +21,37 @@ void apply_gravity(sf::Vector2f &position, sf::Vector2f &velocity, sf::CircleSha
     // Apply gravity to vertical velocity
     velocity.y += GLOBAL_CONST_GRAVITY * deltaTime;
 
+    float shapeRadius = shape.getRadius();
+
     // Boundary collision and damping
-    if (position.y > HEIGHT - shape.getRadius() * 2)
+    if (position.y > HEIGHT - shapeRadius)
     {
-        position.y = HEIGHT - shape.getRadius() * 2;
+        position.y = HEIGHT - shapeRadius;
         velocity.y = -velocity.y * DAMP_FACTOR;
     }
-    if (position.y < 0 + shape.getRadius() * 2)
+    if (position.y < shapeRadius)
     {
-        position.y = 0 + shape.getRadius() * 2;
+        position.y = shapeRadius;
         velocity.y = -velocity.y * DAMP_FACTOR;
     }
-    if (position.x > WIDTH - shape.getRadius() * 2)
+    if (position.x > WIDTH - shapeRadius)
     {
-        position.x = WIDTH - shape.getRadius() * 2;
+        position.x = WIDTH - shapeRadius;
         velocity.x = -velocity.x * DAMP_FACTOR;
     }
-    if (position.x < 0 + shape.getRadius() * 2)
+    if (position.x < shapeRadius)
     {
-        position.x = 0 + shape.getRadius() * 2;
+        position.x = shapeRadius;
         velocity.x = -velocity.x * DAMP_FACTOR;
     }
 
     shape.setPosition(position);
 }
 
-void collide(CircleObject& thisShape, CircleObject& otherShape) {
-    if (detect_collisions(thisShape.getShape(), otherShape.getShape())) {
+void collide(CircleObject &thisShape, CircleObject &otherShape)
+{
+    if (detect_collisions(thisShape.getShape(), otherShape.getShape()))
+    {
         sf::Vector2f v1 = thisShape.getVelocity();
         sf::Vector2f v2 = otherShape.getVelocity();
         sf::Vector2f x1 = thisShape.getShape().getPosition();
@@ -56,7 +60,8 @@ void collide(CircleObject& thisShape, CircleObject& otherShape) {
         sf::Vector2f x_diff = x1 - x2;
         float x_diff_mag_sq = magnitude_squared(x_diff);
 
-        if (x_diff_mag_sq == 0) return; // Avoid division by zero
+        if (x_diff_mag_sq == 0)
+            return; // Avoid division by zero
 
         sf::Vector2f v_diff = v1 - v2;
         float scalar = dot(v_diff, x_diff) / x_diff_mag_sq;
@@ -70,7 +75,8 @@ void collide(CircleObject& thisShape, CircleObject& otherShape) {
         float radiiSum = thisShape.getShape().getRadius() + otherShape.getShape().getRadius();
         float overlap = radiiSum * radiiSum - x_diff_mag_sq;
 
-        if (overlap > 0) { // Only adjust if there's actual overlap
+        if (overlap > 0)
+        { // Only adjust if there's actual overlap
             sf::Vector2f separation = x_diff * (overlap / x_diff_mag_sq) * 0.5f;
 
             // Move shapes apart

@@ -39,7 +39,7 @@ Menu::~Menu()
 void Menu::draw(sf::RenderWindow &window)
 {
     window.draw(title);
-    for(int i = 0; i < MAX_OPTIONS; ++i)
+    for (int i = 0; i < MAX_OPTIONS; ++i)
     {
         window.draw(options[i]);
     }
@@ -47,7 +47,7 @@ void Menu::draw(sf::RenderWindow &window)
 
 void Menu::moveUp()
 {
-    if(selectedItemIndex - 1 >= 0)
+    if (selectedItemIndex - 1 >= 0)
     {
         options[selectedItemIndex].setFillColor(sf::Color::White);
         selectedItemIndex--;
@@ -57,7 +57,7 @@ void Menu::moveUp()
 
 void Menu::moveDown()
 {
-    if(selectedItemIndex + 1 < MAX_OPTIONS)
+    if (selectedItemIndex + 1 < MAX_OPTIONS)
     {
         options[selectedItemIndex].setFillColor(sf::Color::White);
         selectedItemIndex++;

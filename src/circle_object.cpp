@@ -3,12 +3,12 @@
 CircleObject::CircleObject(int radius, sf::Color color, sf::Vector2f position) // Constructor
     : color(color), shape(radius), position(position), velocity(0, 0)
 {
+    shape.setOrigin(radius, radius);
     shape.setPosition(position);
     shape.setFillColor(color);
 }
 
-CircleObject::CircleObject()
-    : color(sf::Color::White), shape(0), position(0, 0), velocity(0, 0)
+CircleObject::CircleObject() : color(sf::Color::White), shape(0), position(0, 0), velocity(0, 0)
 {
     shape.setPosition(position);
     shape.setFillColor(color);

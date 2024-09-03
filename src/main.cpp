@@ -1,9 +1,9 @@
+#include "../include/menu.hpp"
+#include "../include/utils.hpp"
 #include <SFML/Graphics.hpp>
+#include <ctime>
 #include <iostream>
 #include <vector>
-#include <ctime>
-#include "../include/utils.hpp"
-#include "../include/menu.hpp"
 
 enum class SimulationState
 {
@@ -25,8 +25,8 @@ int main()
 
     for (std::size_t i = 0; i < circles.size(); ++i)
     {
-        float x = std::rand() % WIDTH;
-        float y = std::rand() % HEIGHT;
+        float x = std::rand() % (WIDTH - RADIUS);
+        float y = std::rand() % (HEIGHT - RADIUS);
         circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
         circles[i].setVelocity(sf::Vector2f(std::rand() % NUM_CIRCLES - 100, std::rand() % NUM_CIRCLES - 100));
     }
@@ -57,8 +57,8 @@ int main()
                         state = SimulationState::RUNNING_SIMULATION;
                         for (std::size_t i = 0; i < circles.size(); ++i)
                         {
-                            float x = std::rand() % WIDTH;
-                            float y = std::rand() % HEIGHT;
+                            float x = std::rand() % (WIDTH - RADIUS);
+                            float y = std::rand() % (HEIGHT - RADIUS);
                             circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
                         }
                         break;

@@ -1,14 +1,14 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
+#include "utils.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-#include "utils.hpp"
 
 class Menu
 {
-public:
+  public:
     Menu();
     ~Menu();
     void draw(sf::RenderWindow &window);
@@ -16,7 +16,7 @@ public:
     void moveDown();
     int getSelectedItemIndex();
 
-private:
+  private:
     int selectedItemIndex;
     sf::Font font;
     sf::Text title;
