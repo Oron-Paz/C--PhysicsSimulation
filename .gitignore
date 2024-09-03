@@ -1,6 +1,7 @@
 # Ignore compiled object files
 *.o
 *.obj
+main
 
 # Ignore executable files
 *.exe
