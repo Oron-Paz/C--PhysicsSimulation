@@ -9,6 +9,7 @@ enum class SimulationState
 {
     MENU,
     RUNNING_SIMULATION,
+    ENETERING_NUM_CIRCLES,
     EXIT
 };
 
@@ -30,6 +31,20 @@ int main()
         circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
         circles[i].setVelocity(sf::Vector2f(std::rand() % NUM_CIRCLES - 100, std::rand() % NUM_CIRCLES - 100));
     }
+
+    sf::Font font;
+    if (!font.loadFromFile("./assets/fonts/arial.ttf"))
+    {
+        std::cerr << "Error loading font" << std::endl;
+    }
+
+    sf::Text inputText;
+    inputText.setFont(font);
+    inputText.setCharacterSize(24);
+    inputText.setFillColor(sf::Color::White);
+    inputText.setPosition(WIDTH / 2 - 100, HEIGHT / 2 - 50);
+
+    std::string circleCountStr;
 
     Menu menu;
 
@@ -71,7 +86,9 @@ int main()
                             }
                             break;
                         case 1:
-                            // Choose number of circles and start simulation
+                            state = SimulationState::ENETERING_NUM_CIRCLES;
+                            circleCountStr.clear(); // Clear previous input
+                            inputText.setString("Enter number of circles: ");
                             break;
                         case 2:
                             state = SimulationState::EXIT;
@@ -89,6 +106,38 @@ int main()
                     break;
                 }
                 break;
+            case sf::Event::TextEntered:
+                if (state == SimulationState::ENETERING_NUM_CIRCLES)
+                {
+                    if (event.text.unicode >= '0' && event.text.unicode <= '9')
+                    {
+                        circleCountStr += static_cast<char>(event.text.unicode);
+                        inputText.setString("Enter number of circles: " + circleCountStr);
+                    }
+                    else if (event.text.unicode == '\b' && !circleCountStr.empty())
+                    {
+                        circleCountStr.pop_back();
+                        inputText.setString("Enter number of circles: " + circleCountStr);
+                    }
+                    else if (event.text.unicode == '\r')
+                    {
+                        if (!circleCountStr.empty())
+                        {
+                            int numCircles = std::stoi(circleCountStr);
+                            circles.resize(numCircles);
+
+                            for (std::size_t i = 0; i < circles.size(); ++i)
+                            {
+                                float x = std::rand() % (WIDTH - RADIUS);
+                                float y = std::rand() % (HEIGHT - RADIUS);
+                                circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+                                circles[i].setVelocity(
+                                    sf::Vector2f(std::rand() % NUM_CIRCLES - 100, std::rand() % NUM_CIRCLES - 100));
+                            }
+                            state = SimulationState::RUNNING_SIMULATION;
+                        }
+                    }
+                }
             default:
                 break;
             }
@@ -125,6 +174,10 @@ int main()
                 circles[i].draw(window);
             }
             menu.draw(window);
+        }
+        else if (state == SimulationState::ENETERING_NUM_CIRCLES)
+        {
+            window.draw(inputText);
         }
         window.display();
     }
