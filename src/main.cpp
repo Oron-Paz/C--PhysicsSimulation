@@ -17,6 +17,7 @@ int main()
 {
     SimulationState state = SimulationState::MENU;
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Physics Simulation");
+    window.setVerticalSyncEnabled(true);
     sf::Clock clock; // Starts the clock
 
     // Initialize random seed

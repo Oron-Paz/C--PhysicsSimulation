@@ -9,10 +9,11 @@
 class CircleObject;
 
 // vector math functions
-float dot(sf::Vector2f &v1, sf::Vector2f &v2);
-float magnitude_squared(sf::Vector2f &v);
+float dot(const sf::Vector2f &v1, const sf::Vector2f &v2);
+float magnitude_squared(const sf::Vector2f &v);
 
 // kinematics functions
+void handle_boundary_collision(float &pos, float &vel, float min_bound, float max_bound);
 void apply_gravity(sf::Vector2f &position, sf::Vector2f &velocity, sf::CircleShape &shape, float deltaTime);
 void collide(CircleObject &thisShape, CircleObject &otherShape);
 bool detect_collisions(const sf::CircleShape &thisShape, const sf::CircleShape &otherShape);

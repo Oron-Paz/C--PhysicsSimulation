@@ -1,7 +1,7 @@
 #include "../include/utils.hpp"
 
 // vector math functions
-float dot(sf::Vector2f &v1, sf::Vector2f &v2)
+float dot(const sf::Vector2f &v1, const sf::Vector2f &v2)
 {
     return v1.x * v2.x + v1.y * v2.y;
 }
@@ -12,44 +12,38 @@ float magnitude_squared(sf::Vector2f &v)
 }
 
 // kinematics functions
+void handle_boundary_collision(float &pos, float &vel, float min_bound, float max_bound)
+{
+    if (pos > max_bound)
+    {
+        pos = max_bound;
+        vel = -vel * DAMP_FACTOR;
+    }
+    if (pos < min_bound)
+    {
+        pos = min_bound;
+        vel = -vel * DAMP_FACTOR;
+    }
+}
+
 void apply_gravity(sf::Vector2f &position, sf::Vector2f &velocity, sf::CircleShape &shape, float deltaTime)
 {
     // Update position based on current velocity
-    position.y += velocity.y * deltaTime;
-    position.x += velocity.x * deltaTime;
+    position += velocity * deltaTime;
 
     // Apply gravity to vertical velocity
     velocity.y += GLOBAL_CONST_GRAVITY * deltaTime;
 
     float shapeRadius = shape.getRadius();
-
-    // Boundary collision and damping
-    if (position.y > HEIGHT - shapeRadius)
-    {
-        position.y = HEIGHT - shapeRadius;
-        velocity.y = -velocity.y * DAMP_FACTOR;
-    }
-    if (position.y < shapeRadius)
-    {
-        position.y = shapeRadius;
-        velocity.y = -velocity.y * DAMP_FACTOR;
-    }
-    if (position.x > WIDTH - shapeRadius)
-    {
-        position.x = WIDTH - shapeRadius;
-        velocity.x = -velocity.x * DAMP_FACTOR;
-    }
-    if (position.x < shapeRadius)
-    {
-        position.x = shapeRadius;
-        velocity.x = -velocity.x * DAMP_FACTOR;
-    }
+    handle_boundary_collision(position.y, velocity.y, shapeRadius, HEIGHT - shapeRadius);
+    handle_boundary_collision(position.x, velocity.x, shapeRadius, WIDTH - shapeRadius);
 
     shape.setPosition(position);
 }
 
 void collide(CircleObject &thisShape, CircleObject &otherShape)
 {
+    const float EPSILON = 1e-5f;
     if (detect_collisions(thisShape.getShape(), otherShape.getShape()))
     {
         sf::Vector2f v1 = thisShape.getVelocity();
@@ -60,7 +54,7 @@ void collide(CircleObject &thisShape, CircleObject &otherShape)
         sf::Vector2f x_diff = x1 - x2;
         float x_diff_mag_sq = magnitude_squared(x_diff);
 
-        if (x_diff_mag_sq == 0)
+        if (x_diff_mag_sq < EPSILON)
             return; // Avoid division by zero
 
         sf::Vector2f v_diff = v1 - v2;
@@ -73,11 +67,12 @@ void collide(CircleObject &thisShape, CircleObject &otherShape)
 
         // Adjust positions to prevent sticking
         float radiiSum = thisShape.getShape().getRadius() + otherShape.getShape().getRadius();
-        float overlap = radiiSum * radiiSum - x_diff_mag_sq;
+        float distance = std::sqrt(x_diff_mag_sq);
+        float overlap = radiiSum - distance;
 
         if (overlap > 0)
         { // Only adjust if there's actual overlap
-            sf::Vector2f separation = x_diff * (overlap / x_diff_mag_sq) * 0.5f;
+            sf::Vector2f separation = x_diff / distance * overlap * 0.5f;
 
             // Move shapes apart
             thisShape.setPosition(x1 + separation);
