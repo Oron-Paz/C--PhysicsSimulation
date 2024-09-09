@@ -1,3 +1,58 @@
-.vscode
-build
-app
+# Ignore compiled object files
+*.o
+*.obj
+main
+
+# Ignore executable files
+*.exe
+*.out
+*.app
+*.bin
+
+# Ignore build directories
+/build/
+/bin/
+/Debug/
+/Release/
+
+# Ignore SFML library files
+*.lib
+*.dll
+*.dylib
+*.so
+
+# Ignore Code::Blocks workspace files
+*.workspace
+*.layout
+
+# Ignore Visual Studio files
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+*.sln
+*.vcproj
+*.user
+*.ipch/
+*.opensdf
+*.sdf
+*.sqlite
+.vscode/
+
+# Ignore Xcode files
+*.xcworkspace
+*.xcodeproj
+*.xcuserdata/
+
+# Ignore Qt Creator files
+*.pro.user
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore custom files
+*.drawio
+

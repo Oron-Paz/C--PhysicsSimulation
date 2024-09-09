@@ -1,95 +1,185 @@
+#include "../include/menu.hpp"
+#include "../include/utils.hpp"
 #include <SFML/Graphics.hpp>
-#include "CircleObject.h"
-#include "kinematics/kinematics.h"
-#include "utils/vectorMath.h"
+#include <ctime>
 #include <iostream>
+#include <vector>
 
-#define WIDTH 1280
-#define HEIGHT 720
+enum class SimulationState
+{
+    MENU,
+    RUNNING_SIMULATION,
+    ENETERING_NUM_CIRCLES,
+    EXIT
+};
 
-#define RADIUS 5             // Radius of the circle  
-
-#define NUM_ROWS 10           // Number of rows in the grid
-#define NUM_COLS 30          // Number of columns in the grid
-#define SPACING 5.0f         // Spacing between circles
-
-int main() {
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "PHYSICS SIMULATOR");
+int main()
+{
+    SimulationState state = SimulationState::MENU;
+    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Physics Simulation");
+    window.setVerticalSyncEnabled(true);
     sf::Clock clock; // Starts the clock
 
     // Initialize random seed
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    std::vector<CircleObject> circles;
+    std::vector<CircleObject> circles(NUM_CIRCLES);
 
-    std::cout << "Would you like: " << std::endl;
-    std::cout << "[1] 100 Balls in random positions:\n";
-    std::cout << "[2] Random Ball positions (set count):\n";
-    std::cout << "[3] Rectangle Ball positions (set rows & columns):\n";
-
-    int choice;
-    std::cin >> choice;
-
-    if (choice == 1) {
-        circles.resize(100);
-        for (int i = 0; i < 100; ++i) {
-            float x = std::rand() % WIDTH;
-            float y = std::rand() % HEIGHT;
-            circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
-        }
-    } else if (choice == 2) {
-        std::cout << "How many balls? " << std::endl;
-        int count;
-        std::cin >> count;
-        circles.resize(count);
-        for (int i = 0; i < count; ++i) {
-            float x = std::rand() % WIDTH;
-            float y = std::rand() % HEIGHT;
-            circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
-        }
-    } else if (choice == 3) {
-        std::cout << "How many rows? " << std::endl;
-        int rows;
-        std::cin >> rows;
-        std::cout << "How many columns? " << std::endl;
-        int cols;
-        std::cin >> cols;
-        circles.reserve(rows * cols);
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                float x = 100 + j * (2 * RADIUS + SPACING);
-                float y = 100 + i * (2 * RADIUS + SPACING);
-                circles.emplace_back(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
-            }
-        }
+    for (std::size_t i = 0; i < circles.size(); ++i)
+    {
+        float x = std::rand() % (WIDTH - RADIUS);
+        float y = std::rand() % (HEIGHT - RADIUS);
+        circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+        circles[i].setVelocity(sf::Vector2f(std::rand() % NUM_CIRCLES - 100, std::rand() % NUM_CIRCLES - 100));
     }
 
-    while (window.isOpen()) {
+    sf::Font font;
+    if (!font.loadFromFile("./assets/fonts/arial.ttf"))
+    {
+        std::cerr << "Error loading font" << std::endl;
+    }
+
+    sf::Text inputText;
+    inputText.setFont(font);
+    inputText.setCharacterSize(24);
+    inputText.setFillColor(sf::Color::White);
+    inputText.setPosition(WIDTH / 2 - 100, HEIGHT / 2 - 50);
+
+    std::string circleCountStr;
+
+    Menu menu;
+
+    while (window.isOpen())
+    {
         sf::Event event;
         sf::Time deltaTime = clock.restart(); // Restart clock and get deltaTime
+        while (window.pollEvent(event))
+        {
+            switch (event.type)
+            {
+            case sf::Event::KeyReleased:
+                switch (event.key.code)
+                {
+                case sf::Keyboard::Up:
+                    if (state == SimulationState::MENU)
+                    {
+                        menu.moveUp();
+                    }
+                    break;
+                case sf::Keyboard::Down:
+                    if (state == SimulationState::MENU)
+                    {
+                        menu.moveDown();
+                    }
+                    break;
+                case sf::Keyboard::Return:
+                    if (state == SimulationState::MENU)
+                    {
+                        switch (menu.getSelectedItemIndex())
+                        {
+                        case 0:
+                            state = SimulationState::RUNNING_SIMULATION;
+                            for (std::size_t i = 0; i < circles.size(); ++i)
+                            {
+                                float x = std::rand() % (WIDTH - RADIUS);
+                                float y = std::rand() % (HEIGHT - RADIUS);
+                                circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+                            }
+                            break;
+                        case 1:
+                            state = SimulationState::ENETERING_NUM_CIRCLES;
+                            circleCountStr.clear(); // Clear previous input
+                            inputText.setString("Enter number of circles: ");
+                            break;
+                        case 2:
+                            state = SimulationState::EXIT;
+                            window.close();
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                    break;
+                case sf::Keyboard::M:
+                    state = SimulationState::MENU;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case sf::Event::TextEntered:
+                if (state == SimulationState::ENETERING_NUM_CIRCLES)
+                {
+                    if (event.text.unicode >= '0' && event.text.unicode <= '9')
+                    {
+                        circleCountStr += static_cast<char>(event.text.unicode);
+                        inputText.setString("Enter number of circles: " + circleCountStr);
+                    }
+                    else if (event.text.unicode == '\b' && !circleCountStr.empty())
+                    {
+                        circleCountStr.pop_back();
+                        inputText.setString("Enter number of circles: " + circleCountStr);
+                    }
+                    else if (event.text.unicode == '\r')
+                    {
+                        if (!circleCountStr.empty())
+                        {
+                            int numCircles = std::stoi(circleCountStr);
+                            circles.resize(numCircles);
 
-        while (window.pollEvent(event)) {
+                            for (std::size_t i = 0; i < circles.size(); ++i)
+                            {
+                                float x = std::rand() % (WIDTH - RADIUS);
+                                float y = std::rand() % (HEIGHT - RADIUS);
+                                circles[i] = CircleObject(RADIUS, sf::Color::Blue, sf::Vector2f(x, y));
+                                circles[i].setVelocity(
+                                    sf::Vector2f(std::rand() % NUM_CIRCLES - 100, std::rand() % NUM_CIRCLES - 100));
+                            }
+                            state = SimulationState::RUNNING_SIMULATION;
+                        }
+                    }
+                }
+            default:
+                break;
+            }
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+            }
         }
 
         window.clear();
+        if (state == SimulationState::RUNNING_SIMULATION)
+        {
+            for (std::size_t i = 0; i < circles.size(); ++i)
+            {
+                circles[i].update(deltaTime.asSeconds());
 
-        // Update and handle collisions
-        for (size_t i = 0; i < circles.size(); ++i) {
-            circles[i].update(deltaTime.asSeconds());
-
-             // Check for collisions with other circles
-             for (size_t j = i + 1; j < circles.size(); ++j) {
-                collide(circles[i], circles[j]);
+                // Check for collisions with other circles
+                for (std::size_t j = i + 1; j < circles.size(); ++j)
+                {
+                    collide(circles[i], circles[j]);
+                }
+                circles[i].draw(window);
             }
         }
-
-        // Draw each circle
-        for (auto& circle : circles) {
-            circle.draw(window);
+        else if (state == SimulationState::MENU)
+        {
+            for (std::size_t i = 0; i < circles.size(); ++i)
+            {
+                circles[i].update_without_gravity(deltaTime.asSeconds());
+                for (std::size_t j = i + 1; j < circles.size(); ++j)
+                {
+                    collide(circles[i], circles[j]);
+                }
+                circles[i].draw(window);
+            }
+            menu.draw(window);
         }
-
+        else if (state == SimulationState::ENETERING_NUM_CIRCLES)
+        {
+            window.draw(inputText);
+        }
         window.display();
     }
 
