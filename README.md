@@ -20,8 +20,8 @@ This is a simple physics simulation built using the SFML (Simple and Fast Multim
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/ignabelitzky/physics-simulation.git
-    cd physics-simulation
+    git clone https://github.com/Oron-Paz/PhysicsSimulation.git
+    cd PhysicsSimulation
     ```
 
 2. Compile the program:
